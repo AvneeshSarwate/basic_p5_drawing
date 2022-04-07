@@ -2,16 +2,19 @@ const urlSearchParams = new URLSearchParams(window.location.search);
 const urlParams = Object.fromEntries(urlSearchParams.entries());
 
 const urlPeerType = urlParams['type']; //"sender" or "receiver"
+const ignoreDatGui = urlParams['ignoreDatGui'];
+let customId = urlParams['id'];
 const peerType = ["sender", "receiver"].includes(urlPeerType) ? urlPeerType : "sender";
 
-const peer = new Peer({
+const peer = new Peer(customId ?? null, {
     // port: 9000,
     host: "pubsubtest-272606.uc.r.appspot.com",
     path: "/",
     secure: true
 }); 
 
-history.replaceState("", "", window.location.origin + window.location.pathname + `?type=${peerType}&id=${peer.id}`);
+let repalceURL = () => history.replaceState("", "", window.location.origin + window.location.pathname + `?type=${peerType}&id=${peer.id}&ignoreDatGui=${ignoreDatGui}`);
+repalceURL();
 
 let retryCount = 0;
 let retrySetUrlId = () => {
@@ -19,7 +22,7 @@ let retrySetUrlId = () => {
         console.log("retrying url id setting", retryCount++);
         setTimeout(retrySetUrlId, 1000)
     } else {
-        history.replaceState("", "", window.location.origin + window.location.pathname + `?type=${peerType}&id=${peer.id}`);
+        repalceURL();
     }
 }
 
@@ -34,7 +37,6 @@ const remoteState = {
 };
 let connection = null;
 
-const gui = new dat.GUI();
 const drawParams = {
     strokeWeight: 5,
     stroke: [ 0, 0, 0 ], // RGB array
@@ -58,15 +60,17 @@ peer.on('connection', (conn) => {
         console.warn("peer connection error", e);
     });
     connection = conn
-  });
+    console.log("got connection from sender");
+});
 
+const gui = new dat.GUI();
 gui.remember(drawParams);
 gui.add(drawParams, 'strokeWeight').min(1).max(10).step(0.25).onFinishChange(v => bounceDatGuiToRemote(v, 'strokeWeight') );
 gui.addColor(drawParams, 'stroke').onFinishChange(v => bounceDatGuiToRemote(v, 'stroke') );;
 gui.add(drawParams, 'receiverId');
 gui.add(drawParams, 'connectToReciever');
 
-if(peerType == "receiver") {
+if(peerType == "receiver" || ignoreDatGui) {
   gui.hide();
 }
 
@@ -82,8 +86,8 @@ function setup() {
     createCanvas(window.innerWidth, window.innerHeight);
     let handleMove = (e) => e.preventDefault();
     document
-        .getElementsByTagName("body")[0]
-        .addEventListener("touchmove", handleMove);
+        .getElementsByTagName("body")[0].style.overflow = 'hidden';
+        // .addEventListener("touchmove", handleMove);
 }
 
 
