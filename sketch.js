@@ -63,21 +63,21 @@ peer.on('connection', (conn) => {
     console.log("got connection from sender");
 });
 
-const gui = new dat.GUI();
-gui.remember(drawParams);
-gui.add(drawParams, 'strokeWeight').min(1).max(10).step(0.25).onFinishChange(v => bounceDatGuiToRemote(v, 'strokeWeight') );
-gui.addColor(drawParams, 'stroke').onFinishChange(v => bounceDatGuiToRemote(v, 'stroke') );;
-gui.add(drawParams, 'receiverId');
-gui.add(drawParams, 'connectToReciever');
+// const gui = new dat.GUI();
+// gui.remember(drawParams);
+// gui.add(drawParams, 'strokeWeight').min(1).max(10).step(0.25).onFinishChange(v => bounceDatGuiToRemote(v, 'strokeWeight') );
+// gui.addColor(drawParams, 'stroke').onFinishChange(v => bounceDatGuiToRemote(v, 'stroke') );;
+// gui.add(drawParams, 'receiverId');
+// gui.add(drawParams, 'connectToReciever');
 
-if(peerType == "receiver" || ignoreDatGui) {
-  gui.hide();
-}
+// if(peerType == "receiver" || ignoreDatGui) {
+//   gui.hide();
+// }
 
-let mouseDownInDatGui = false;
-const datGuiContainer = document.getElementsByClassName("dg ac")[0];
-datGuiContainer.addEventListener('mousedown', () => {mouseDownInDatGui = true});
-datGuiContainer.addEventListener('mouseup', () => {mouseDownInDatGui = false});
+// let mouseDownInDatGui = false;
+// const datGuiContainer = document.getElementsByClassName("dg ac")[0];
+// datGuiContainer.addEventListener('mousedown', () => {mouseDownInDatGui = true});
+// datGuiContainer.addEventListener('mouseup', () => {mouseDownInDatGui = false});
 
 
 
@@ -85,9 +85,9 @@ let pts = [];
 function setup() {
     createCanvas(window.innerWidth, window.innerHeight);
     let handleMove = (e) => e.preventDefault();
-    document
-        .getElementsByTagName("body")[0].style.overflow = 'hidden';
-        // .addEventListener("touchmove", handleMove);
+    const body = document.getElementsByTagName("body")[0]
+    body.style.overflow = 'hidden';
+    body.addEventListener("touchmove", handleMove);
 }
 
 
