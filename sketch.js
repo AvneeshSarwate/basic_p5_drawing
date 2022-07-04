@@ -33,13 +33,15 @@ const remoteState = {
     mouseY: 0,
     mouseIsPressed: false,
     stroke: [0, 0, 0],
+    background: [255, 255, 255],
     strokeWeight: 5
 };
 let connection = null;
 
 const drawParams = {
     strokeWeight: 5,
-    stroke: [ 0, 0, 0 ], // RGB array
+    stroke: [0, 0, 0], // RGB array
+    background: [255, 255, 255], //RGB array
     receiverId: "pasteIdHere",
     connectToReciever: () =>{
         connection = peer.connect(drawParams.receiverId);
@@ -66,7 +68,8 @@ peer.on('connection', (conn) => {
 const gui = new dat.GUI();
 gui.remember(drawParams);
 gui.add(drawParams, 'strokeWeight').min(1).max(10).step(0.25).onFinishChange(v => bounceDatGuiToRemote(v, 'strokeWeight') );
-gui.addColor(drawParams, 'stroke').onFinishChange(v => bounceDatGuiToRemote(v, 'stroke') );;
+gui.addColor(drawParams, 'stroke').onFinishChange(v => bounceDatGuiToRemote(v, 'stroke'));
+gui.addColor(drawParams, 'background').onFinishChange(v => bounceDatGuiToRemote(v, 'backround') );
 gui.add(drawParams, 'receiverId');
 gui.add(drawParams, 'connectToReciever');
 
@@ -105,10 +108,24 @@ function sendDrawVals() {
     }
 }
 
+
+let lastBackground = [-1, -1, -1];
+let colorsAreSame = (c1, c2) => c1[0] === c2[0] && c1[1] === c2[1] && c1[2] === c2[2]
+
 function draw() {
 
     drawVals = getDrawVals();
     sendDrawVals();
+
+    if (!colorsAreSame(drawVals.background, lastBackground)) {
+        push();
+        stroke(drawVals.background[0], drawVals.background[1], drawVals.background[2]);
+        fill(drawVals.background[0], drawVals.background[1], drawVals.background[2]);
+        rect(0, 0, width, height);
+        pop();
+        lastBackground = drawVals.background.map(e => e);
+    }
+    
 
     stroke(drawVals.stroke);
     strokeWeight(drawVals.strokeWeight);
