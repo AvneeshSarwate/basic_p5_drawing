@@ -32,16 +32,16 @@ const remoteState = {
     mouseX: 0,
     mouseY: 0,
     mouseIsPressed: false,
-    stroke: [0, 0, 0],
-    background: [255, 255, 255],
+    stroke: [255, 255, 255],
+    background: [0, 0, 0],
     strokeWeight: 5
 };
 let connection = null;
 
 const drawParams = {
     strokeWeight: 5,
-    stroke: [0, 0, 0], // RGB array
-    background: [255, 255, 255], //RGB array
+    stroke: [255, 255, 255], // RGB array
+    background: [0, 0, 0], //RGB array
     receiverId: "pasteIdHere",
     connectToReciever: () =>{
         connection = peer.connect(drawParams.receiverId);
