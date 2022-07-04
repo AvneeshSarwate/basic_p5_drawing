@@ -45,6 +45,9 @@ const drawParams = {
     receiverId: "pasteIdHere",
     connectToReciever: () =>{
         connection = peer.connect(drawParams.receiverId);
+    },
+    hideGUI: () => {
+        gui.hide();
     }
 }
 
@@ -72,6 +75,7 @@ gui.addColor(drawParams, 'stroke').onFinishChange(v => bounceDatGuiToRemote(v, '
 gui.addColor(drawParams, 'background').onFinishChange(v => bounceDatGuiToRemote(v, 'backround') );
 gui.add(drawParams, 'receiverId');
 gui.add(drawParams, 'connectToReciever');
+gui.add(drawParams, 'hideGUI');
 
 if(peerType == "receiver" || ignoreDatGui) {
   gui.hide();
